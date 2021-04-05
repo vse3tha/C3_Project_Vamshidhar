@@ -17,20 +17,14 @@ class RestaurantServiceTest {
     //>>>>>>>>>>>>>>>>>>>>>>SEARCHING<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     @Test
     public void searching_for_existing_restaurant_should_return_expected_restaurant_object() throws restaurantNotFoundException {
-        //WRITE UNIT TEST CASE HERE
-        LocalTime openingTime = LocalTime.parse("10:30:00");
-        LocalTime closingTime = LocalTime.parse("22:00:00");
-        restaurant = service.addRestaurant("Amelie's cafe","Chennai",openingTime,closingTime);
+        setupRestarentMenu();
         assertSame(restaurant, service.findRestaurantByName(restaurant.getName()), "Data not found");
     }
 
     //You may watch the video by Muthukumaran on how to write exceptions in Course 3: Testing and Version control: Optional content
     @Test
     public void searching_for_non_existing_restaurant_should_throw_exception() throws restaurantNotFoundException {
-        //WRITE UNIT TEST CASE HERE
-        LocalTime openingTime = LocalTime.parse("10:30:00");
-        LocalTime closingTime = LocalTime.parse("22:00:00");
-        restaurant = service.addRestaurant("Amelie's cafe","Chennai",openingTime,closingTime);
+        setupRestarentMenu();
         assertThrows(restaurantNotFoundException.class,()->service.findRestaurantByName("Pantry d'or"));
 
     }
@@ -42,11 +36,7 @@ class RestaurantServiceTest {
     //>>>>>>>>>>>>>>>>>>>>>>ADMIN: ADDING & REMOVING RESTAURANTS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     @Test
     public void remove_restaurant_should_reduce_list_of_restaurants_size_by_1() throws restaurantNotFoundException {
-        LocalTime openingTime = LocalTime.parse("10:30:00");
-        LocalTime closingTime = LocalTime.parse("22:00:00");
-        restaurant = service.addRestaurant("Amelie's cafe","Chennai",openingTime,closingTime);
-        restaurant.addToMenu("Sweet corn soup",119);
-        restaurant.addToMenu("Vegetable lasagne", 269);
+        setupRestarentMenu();
 
         int initialNumberOfRestaurants = service.getRestaurants().size();
         service.removeRestaurant("Amelie's cafe");
@@ -55,26 +45,32 @@ class RestaurantServiceTest {
 
     @Test
     public void removing_restaurant_that_does_not_exist_should_throw_exception() throws restaurantNotFoundException {
-        LocalTime openingTime = LocalTime.parse("10:30:00");
-        LocalTime closingTime = LocalTime.parse("22:00:00");
-        restaurant = service.addRestaurant("Amelie's cafe","Chennai",openingTime,closingTime);
-        restaurant.addToMenu("Sweet corn soup",119);
-        restaurant.addToMenu("Vegetable lasagne", 269);
+        setupRestarentMenu();
 
         assertThrows(restaurantNotFoundException.class,()->service.removeRestaurant("Pantry d'or"));
     }
 
     @Test
     public void add_restaurant_should_increase_list_of_restaurants_size_by_1(){
-        LocalTime openingTime = LocalTime.parse("10:30:00");
-        LocalTime closingTime = LocalTime.parse("22:00:00");
-        restaurant = service.addRestaurant("Amelie's cafe","Chennai",openingTime,closingTime);
-        restaurant.addToMenu("Sweet corn soup",119);
-        restaurant.addToMenu("Vegetable lasagne", 269);
+        setupRestarentMenu();
 
         int initialNumberOfRestaurants = service.getRestaurants().size();
         service.addRestaurant("Pumpkin Tales","Chennai",LocalTime.parse("12:00:00"),LocalTime.parse("23:00:00"));
         assertEquals(initialNumberOfRestaurants + 1,service.getRestaurants().size());
+    }
+
+
+    /*
+     * This below method is to validate selected total items price value in a restaurant.
+     * Means Passed case scenario test
+     */
+    @Test
+    public void validate_total_item_price_for_existing_restaurant_should_return_expected_restaurant_items_price() throws restaurantNotFoundException {
+        setupRestarentMenu();
+        List<String> items = new ArrayList<String>();
+        items.add("Sweet corn soup");
+        items.add("Vegetable lasagne");
+        assertEquals(388, service.findRestaurantItemsOrderPriceByNameAndItems(restaurant.getName(), items), "Data not found");
     }
 
     /*
@@ -87,7 +83,7 @@ class RestaurantServiceTest {
         List<String> items = new ArrayList<String>();
         items.add("Sweet corn soup");
         items.add("Vegetable lasagne");
-        assertEquals(0, service.findRestaurantItemsOrderPriceByNameAndItems("Dummy Restaurant", items), "Data not found");
+        assertEquals(0, service.findRestaurantItemsOrderPriceByNameAndItems("Dummy Restarent", items), "Data not found");
     }
 
     private void setupRestarentMenu()

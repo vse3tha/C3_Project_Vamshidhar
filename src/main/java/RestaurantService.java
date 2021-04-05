@@ -13,9 +13,28 @@ public class RestaurantService {
         throw new restaurantNotFoundException(restaurantName);
     }
 
+    public int findRestaurantItemsOrderPriceByNameAndItems(String restaurantName, List<String> items) {
+        try {
+            Restaurant restaurant = findRestaurantByName(restaurantName);
+            if(restaurant.getName().equals(restaurantName))
+                return restaurant.findItemsToalValueByOrderItems(items);
+        }
+        catch(restaurantNotFoundException rnte){}
+        return 0;
+    }
 
     public Restaurant addRestaurant(String name, String location, LocalTime openingTime, LocalTime closingTime) {
-        Restaurant newRestaurant = new Restaurant(name, location, openingTime, closingTime);
+        Restaurant newRestaurant = null;
+        try {
+            newRestaurant = findRestaurantByName(name);
+            if(newRestaurant!=null)
+                return newRestaurant;
+        } catch (restaurantNotFoundException e)
+        {
+            // TODO: handle exception
+        }
+
+        newRestaurant = new Restaurant(name, location, openingTime, closingTime);
         restaurants.add(newRestaurant);
         return newRestaurant;
     }
